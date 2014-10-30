@@ -75,6 +75,14 @@ abstract class WebTestCase extends Test
                     return $asserter->setWith($crawler);
                 }
             )
+            ->setHandler(
+                'json',
+                function () use (& $client) {
+                    $asserter = new Asserters\RecursiveArray();
+
+                    return $asserter->setWith(json_decode($client->getResponse()->getContent(), true));
+                }
+            )
         ;
 
     }
