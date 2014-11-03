@@ -5,9 +5,26 @@ namespace atoum\AtoumBundle\Test\Asserters;
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
+use atoum\AtoumBundle\Test\Asserters\String;
+use atoum\AtoumBundle\Test\Asserters\Float;
+use atoum\AtoumBundle\Test\Asserters\Integer;
 
 class RecursiveArray extends asserters\phpArray
 {
+    /** @var \atoum\AtoumBundle\Test\Asserters\Crawler  */
+    private $parent;
+
+    /**
+     * @param asserter\generator $generator
+     * @param Crawler|Element    $parent
+     */
+    public function __construct(asserter\generator $generator, $parent = null)
+    {
+        parent::__construct($generator);
+
+        $this->parent = $parent;
+    }
+
     /**
      * @param string $key
      *
@@ -15,7 +32,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasArray($key)
     {
-        $asserter = new RecursiveArray($this->generator);
+        $asserter = new RecursiveArray($this->generator, $this);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -27,7 +44,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasInteger($key)
     {
-        $asserter = new asserters\integer($this->generator);
+        $asserter = new Integer($this->generator, $this);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -39,7 +56,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasFloat($key)
     {
-        $asserter = new asserters\float($this->generator);
+        $asserter = new Float($this->generator, $this);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -51,8 +68,13 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasString($key)
     {
-        $asserter = new asserters\string($this->generator);
+        $asserter = new String($this->generator, $this);
 
         return $asserter->setWith($this->value[$key], $key);
+    }
+
+    public function end()
+    {
+        return $this->parent;
     }
 }
