@@ -15,7 +15,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasArray($key)
     {
-        $asserter = new RecursiveArray();
+        $asserter = new RecursiveArray($this->generator);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -27,7 +27,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasInteger($key)
     {
-        $asserter = new asserters\integer();
+        $asserter = new asserters\integer($this->generator);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -39,7 +39,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasFloat($key)
     {
-        $asserter = new asserters\float();
+        $asserter = new asserters\float($this->generator);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -51,7 +51,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasString($key)
     {
-        $asserter = new asserters\string();
+        $asserter = new asserters\string($this->generator);
 
         return $asserter->setWith($this->value[$key], $key);
     }
