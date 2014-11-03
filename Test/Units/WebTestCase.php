@@ -77,8 +77,8 @@ abstract class WebTestCase extends Test
             )
             ->setHandler(
                 'json',
-                function () use (& $client) {
-                    $asserter = new Asserters\RecursiveArray();
+                function () use (& $client, $generator) {
+                    $asserter = new Asserters\RecursiveArray($generator);
 
                     return $asserter->setWith(json_decode($client->getResponse()->getContent(), true));
                 }
