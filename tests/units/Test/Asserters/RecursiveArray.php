@@ -95,4 +95,22 @@ class RecursiveArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
         ;
     }
+
+    public function testHasNot()
+    {
+        $this
+            ->if($object = new TestedClass($generator = new asserter\generator()))
+            ->and($array = ['key' => 42.12])
+            ->and($object->setWith($array, true))
+            ->then
+                ->class($object->hasNot('false_key'))->isSubclassOf('\\mageekguy\\atoum\\asserters\\phpArray')
+            ->if($array = ['key' => []])
+            ->and($object->setWith($array, true))
+            ->then
+                ->exception(function () use ($object) {
+                    $object->hasNot('key');
+                })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+        ;
+    }
 }

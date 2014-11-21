@@ -73,6 +73,20 @@ class RecursiveArray extends asserters\phpArray
         return $asserter->setWith($this->value[$key], $key);
     }
 
+    /**
+     * @param string $key
+     */
+    public function hasNot($key, $failMessage = null)
+    {
+        if (!array_key_exists($key, $this->value)) {
+            $this->pass();
+        } else {
+            $this->fail($failMessage ?: $this->_('key %s exists in array', $key));
+        }
+
+        return $this;
+    }
+
     public function end()
     {
         return $this->parent;
