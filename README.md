@@ -168,6 +168,30 @@ class BarController extends ControllerTest
                         ->hasElement('link')
                             ->isEmpty()
                         ->end()
+                // Usefull to test json api
+                ->POST('json_api_demo/movies/4')
+                    ->hasStatus(200)
+                    ->hasHeader('Content-Type', 'text/html; charset=UTF-8')
+                    ->json
+                        ->hasString('title')
+                            ->isEqualTo('MyTitle')
+                        ->end()
+                        ->hasFloat('note')
+                            ->isEqualTo(8.76)
+                        ->end()
+                        ->hasInteger('year')
+                            ->isEqualTo(1976)
+                        ->end()
+                        ->hasArray('actors')
+                            ->hasSize(19)
+                            ->hasArray(0)
+                                ->hasString('name')
+                                    ->isEqualTo('MyMovie')
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->hasNot('price')
+
         ;
     }
 }
