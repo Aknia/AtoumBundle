@@ -8,6 +8,7 @@ use mageekguy\atoum\asserters;
 use atoum\AtoumBundle\Test\Asserters\String;
 use atoum\AtoumBundle\Test\Asserters\Float;
 use atoum\AtoumBundle\Test\Asserters\Integer;
+use atoum\AtoumBundle\Test\Asserters\Boolean;
 
 class RecursiveArray extends asserters\phpArray
 {
@@ -69,6 +70,18 @@ class RecursiveArray extends asserters\phpArray
     public function hasString($key)
     {
         $asserter = new String($this->generator, $this);
+
+        return $asserter->setWith($this->value[$key], $key);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return \mageekguy\atoum\asserters\boolean
+     */
+    public function hasBoolean($key)
+    {
+        $asserter = new Boolean($this->generator, $this);
 
         return $asserter->setWith($this->value[$key], $key);
     }
