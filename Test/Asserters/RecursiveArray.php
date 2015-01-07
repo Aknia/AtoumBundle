@@ -29,6 +29,18 @@ class RecursiveArray extends asserters\phpArray
     /**
      * @param string $key
      *
+     * @return \mageekguy\atoum\asserters\variable
+     */
+    public function hasVariable($key)
+    {
+        $asserter = new Variable($this->generator, $this);
+
+        return $asserter->setWith($this->value[$key], $key);
+    }
+
+    /**
+     * @param string $key
+     *
      * @return RecursiveArray
      */
     public function hasArray($key)
