@@ -15,14 +15,14 @@ class RecursiveArray extends asserters\phpArray
     /** @var \atoum\AtoumBundle\Test\Asserters\Crawler  */
     private $parent;
 
-    /**
-     * @param asserter\generator $generator
-     * @param Crawler|Element    $parent
-     */
-    public function __construct(asserter\generator $generator, $parent = null)
-    {
-        parent::__construct($generator);
 
+    /**
+     * Set parent
+     *
+     * @param \atoum\AtoumBundle\Test\Asserters\RecursiveArray $parent
+     */
+    public function setParent(RecursiveArray $parent)
+    {
         $this->parent = $parent;
     }
 
@@ -33,7 +33,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasVariable($key)
     {
-        $asserter = new Variable($this->generator, $this);
+        $asserter = new Variable($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -45,7 +47,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasArray($key)
     {
-        $asserter = new RecursiveArray($this->generator, $this);
+        $asserter = new RecursiveArray($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -57,7 +61,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasInteger($key)
     {
-        $asserter = new Integer($this->generator, $this);
+        $asserter = new Integer($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -69,7 +75,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasFloat($key)
     {
-        $asserter = new Float($this->generator, $this);
+        $asserter = new Float($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -81,7 +89,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasString($key)
     {
-        $asserter = new String($this->generator, $this);
+        $asserter = new String($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }
@@ -93,7 +103,9 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasBoolean($key)
     {
-        $asserter = new Boolean($this->generator, $this);
+        $asserter = new Boolean($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
 
         return $asserter->setWith($this->value[$key], $key);
     }

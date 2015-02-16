@@ -80,6 +80,7 @@ abstract class WebTestCase extends Test
                 function () use (& $client, $generator) {
                     $asserter = new Asserters\RecursiveArray($generator);
 
+                    $asserter->setWithTest($this);
                     return $asserter->setWith(json_decode($client->getResponse()->getContent(), true));
                 }
             )
@@ -119,6 +120,7 @@ abstract class WebTestCase extends Test
             /** @var $client \Symfony\Bundle\FrameworkBundle\Client */
             $crawler = $client->request($method, $path, $parameters, $files, $server, $content, $changeHistory);
             $asserter = new Asserters\Response($generator);
+            $asserter->setWithTest($this);
 
             return $asserter->setWith($client->getResponse());
         };

@@ -12,13 +12,12 @@ class Integer extends asserters\integer
     private $parent;
 
     /**
-     * @param asserter\generator $generator
-     * @param Crawler|Element    $parent
+     * Set parent
+     *
+     * @param \atoum\AtoumBundle\Test\Asserters\RecursiveArray $parent
      */
-    public function __construct(asserter\generator $generator, $parent)
+    public function setParent(RecursiveArray $parent)
     {
-        parent::__construct($generator);
-
         $this->parent = $parent;
     }
 
