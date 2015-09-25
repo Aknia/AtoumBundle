@@ -89,7 +89,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasString($key)
     {
-        $asserter = new String($this->generator);
+        $asserter = new PhpString($this->generator);
         $asserter->setParent($this);
         $asserter->setWithTest($this->test);
 
