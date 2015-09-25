@@ -6,7 +6,7 @@ use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
 
-class Float extends asserters\phpFloat
+class PhpFloat extends asserters\phpFloat
 {
     /** @var \atoum\AtoumBundle\Test\Asserters\Crawler  */
     private $parent;

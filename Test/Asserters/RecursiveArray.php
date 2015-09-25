@@ -5,8 +5,8 @@ namespace atoum\AtoumBundle\Test\Asserters;
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
-use atoum\AtoumBundle\Test\Asserters\String;
-use atoum\AtoumBundle\Test\Asserters\Float;
+use atoum\AtoumBundle\Test\Asserters\PhpString;
+use atoum\AtoumBundle\Test\Asserters\PhpFloat;
 use atoum\AtoumBundle\Test\Asserters\Integer;
 use atoum\AtoumBundle\Test\Asserters\Boolean;
 
@@ -75,7 +75,7 @@ class RecursiveArray extends asserters\phpArray
      */
     public function hasFloat($key)
     {
-        $asserter = new Float($this->generator);
+        $asserter = new PhpFloat($this->generator);
         $asserter->setParent($this);
         $asserter->setWithTest($this->test);
 

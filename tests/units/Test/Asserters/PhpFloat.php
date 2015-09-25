@@ -7,7 +7,7 @@ use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use atoum\AtoumBundle\Test\Asserters\Float as TestedClass;
 
-class Float extends atoum\test
+class PhpFloat extends atoum\test
 {
     public function testClass()
     {
