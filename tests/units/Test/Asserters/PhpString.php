@@ -7,7 +7,7 @@ use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use atoum\AtoumBundle\Test\Asserters\String as TestedClass;
 
-class String extends atoum\test
+class PhpString extends atoum\test
 {
     public function testClass()
     {

@@ -6,7 +6,7 @@ use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
 
-class String extends asserters\phpString
+class PhpString extends asserters\phpString
 {
     /** @var \atoum\AtoumBundle\Test\Asserters\Crawler  */
     private $parent;
