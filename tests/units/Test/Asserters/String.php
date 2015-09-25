@@ -11,6 +11,6 @@ class String extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('\\mageekguy\\atoum\\asserters\\string');
+        $this->testedClass->isSubclassOf('\\mageekguy\\atoum\\asserters\\phpString');
     }
 }

@@ -11,6 +11,6 @@ class Float extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('\\mageekguy\\atoum\\asserters\\float');
+        $this->testedClass->isSubclassOf('\\mageekguy\\atoum\\asserters\\phpFloat');
     }
 }

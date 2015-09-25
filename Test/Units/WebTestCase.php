@@ -64,11 +64,8 @@ abstract class WebTestCase extends Test
             )
             ->setHandler(
                 'json',
-                function () use (& $client, $generator) {
-                    $asserter = new Asserters\RecursiveArray($generator);
-
-                    $asserter->setWithTest($this);
-                    return $asserter->setWith(json_decode($client->getResponse()->getContent(), true));
+                function () use (& $client, $generator, $test) {
+                    return $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\RecursiveArrayyyy', array(json_decode($client->getResponse()->getContent(), true)), $test);
                 }
             )
         ;
