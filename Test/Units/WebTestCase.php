@@ -3,9 +3,6 @@
 namespace atoum\AtoumBundle\Test\Units;
 
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use atoum\AtoumBundle\Test\Asserters;
 use mageekguy\atoum;
 use Symfony\Component\CssSelector\CssSelector;
 
@@ -17,15 +14,6 @@ use Symfony\Component\CssSelector\CssSelector;
  */
 abstract class WebTestCase extends Test
 {
-    /** @var $string */
-    protected $class;
-
-    /** @var \Symfony\Component\HttpKernel\HttpKernelInterface */
-    protected $kernel;
-
-    /** @var boolean */
-    protected $kernelReset = true;
-
     /**
      * {@inheritdoc}
      */
@@ -34,6 +22,7 @@ abstract class WebTestCase extends Test
         parent::__construct($adapter, $annotationExtractor, $asserterGenerator, $assertionManager, $reflectionClassFactory);
 
         $generator = $this->getAsserterGenerator();
+
         $test = $this;
         $crawler = null;
         $client = null;
@@ -41,7 +30,7 @@ abstract class WebTestCase extends Test
         $this->getAssertionManager()
             ->setHandler(
                 'request',
-                function(array $options = array(), array $server = array(), array $cookies = array()) use (& $client, $test, $generator) {
+                function(array $options = array(), array $server = array(), array $cookies = array()) use (& $client, $test) {
                     $client = $test->createClient($options, $server, $cookies);
 
                     return $test;
@@ -63,16 +52,14 @@ abstract class WebTestCase extends Test
             ->setHandler('OPTIONS', $options)
             ->setHandler(
                 'crawler',
-                function ($strict = false) use (& $crawler, $generator) {
+                function ($strict = false) use (& $crawler, $generator, $test) {
                     if ($strict) {
                         CssSelector::enableHtmlExtension();
                     } else {
                         CssSelector::disableHtmlExtension();
                     }
 
-                    $asserter = new Asserters\Crawler($generator);
-
-                    return $asserter->setWith($crawler);
+                    return $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Crawler', array($crawler), $test);
                 }
             )
             ->setHandler(
@@ -89,23 +76,6 @@ abstract class WebTestCase extends Test
     }
 
     /**
-     * @param atoum\annotations\extractor $extractor
-     *
-     * @return $this|void
-     */
-    protected function setClassAnnotations(atoum\annotations\extractor $extractor)
-    {
-        parent::setClassAnnotations($extractor);
-
-        $test = $this;
-
-        $extractor
-            ->setHandler('resetKernel', function ($value) use ($test) { $test->enableKernelReset(atoum\annotations\extractor::toBoolean($value)); })
-            ->setHandler('noResetKernel', function () use ($test) { $test->enableKernelReset(false); })
-        ;
-    }
-
-    /**
      * @param \Symfony\Bundle\FrameworkBundle\Client $client
      * @param \Symfony\Component\DomCrawler\Crawler  $crawler
      * @param string                                 $method
@@ -115,14 +85,13 @@ abstract class WebTestCase extends Test
     protected function getSendRequestHandler(& $client, & $crawler, $method)
     {
         $generator = $this->getAsserterGenerator();
+        $test = $this;
 
-        return function($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true) use (& $client, & $crawler, $method, $generator) {
+        return function($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true) use (& $client, & $crawler, $method, $generator, $test) {
             /** @var $client \Symfony\Bundle\FrameworkBundle\Client */
             $crawler = $client->request($method, $path, $parameters, $files, $server, $content, $changeHistory);
-            $asserter = new Asserters\Response($generator);
-            $asserter->setWithTest($this);
 
-            return $asserter->setWith($client->getResponse());
+            return $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Response', array($client->getResponse()), $test);
         };
     }
 
@@ -155,96 +124,5 @@ abstract class WebTestCase extends Test
         }
 
         return $client;
-    }
-
-    /**
-     * Creates a Kernel.
-     *
-     * Available options:
-     *
-     *  * environment
-     *  * debug
-     *
-     * @param array $options An array of options
-     *
-     * @return HttpKernelInterface A HttpKernelInterface instance
-     */
-    protected function createKernel(array $options = array())
-    {
-        if (null === $this->class) {
-            $this->class = $this->getKernelClass();
-        }
-
-        return new $this->class(
-            isset($options['environment']) ? $options['environment'] : 'test',
-            isset($options['debug']) ? $options['debug'] : true
-        );
-    }
-
-    /**
-     * Attempts to guess the kernel location.
-     *
-     * When the Kernel is located, the file is required.
-     *
-     * @throws \RuntimeException
-     *
-     * @return string The Kernel class name
-     */
-    protected function getKernelClass()
-    {
-        $dir = $this->getKernelDirectory();
-
-        $finder = new Finder();
-        $finder->name('*Kernel.php')->depth(0)->in($dir);
-        $results = iterator_to_array($finder);
-        if (!count($results)) {
-            throw new \RuntimeException('Impossible to find a Kernel file, override the WebTestCase::getKernelDirectory() method or WebTestCase::createKernel() method.');
-        }
-
-        $file = current($results);
-        $class = $file->getBasename('.php');
-
-        require_once $file;
-
-        return $class;
-    }
-
-    /**
-     * Override this method if needed
-     *
-     * @return string
-     */
-    protected function getKernelDirectory()
-    {
-        $dir = getcwd().'/app';
-        if (!is_dir($dir)) {
-            $dir = dirname($dir);
-        }
-
-        return $dir;
-    }
-
-    /**
-     * return Kernel
-     *
-     * @return Object HttpKernelInterface
-     */
-    public function getKernel()
-    {
-        return $this->kernel;
-    }
-
-    /**
-     * Enable or disable kernel reseting on client creation.
-     *
-     * @param boolean $kernelReset
-     *
-     * @return WebTestCase
-     */
-    public function enableKernelReset($kernelReset)
-    {
-        $this->kernelReset = (boolean) $kernelReset;
-
-        return $this;
     }
 }
