@@ -112,6 +112,26 @@ class RecursiveArray extends asserters\phpArray
 
     /**
      * @param string $key
+     *
+     * @return \mageekguy\atoum\asserters\dateTime
+     */
+    public function hasDateTime($key, $failMessage = null)
+    {
+        $asserter = new DateTime($this->generator);
+        $asserter->setParent($this);
+        $asserter->setWithTest($this->test);
+
+        try {
+            $date = new \DateTime($this->value[$key]);
+        } catch (\Exception $e) {
+            $this->fail($failMessage ?: $this->_('key "%s" is not a valid string date', $key));
+        }
+
+        return $asserter->setWith($date, $key);
+    }
+
+    /**
+     * @param string $key
      */
     public function hasNot($key, $failMessage = null)
     {
