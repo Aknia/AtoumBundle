@@ -14,9 +14,9 @@ class Integer extends asserters\integer
     /**
      * Set parent
      *
-     * @param \atoum\AtoumBundle\Test\Asserters\RecursiveArray $parent
+     * @param $mixed $parent
      */
-    public function setParent(RecursiveArray $parent)
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
