@@ -32,8 +32,9 @@ abstract class WebTestCase extends Test
                 'request',
                 function(array $options = array(), array $server = array(), array $cookies = array()) use (& $client, $test) {
                     $client = $test->createClient($options, $server, $cookies);
-                    $client->restart();
                     $client->enableProfiler();
+
+                    // $client->getContainer()->get('profiler')->purge();
 
                     return $test;
                 }

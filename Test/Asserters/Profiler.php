@@ -53,7 +53,10 @@ class Profiler extends asserters\object
      */
     public function logger()
     {
-        return $this->generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\LoggerDataCollector', array($this->value->getCollector('logger')), $this->test);
+        $logger = $this->generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\LoggerDataCollector', array($this->value->getCollector('logger')), $this->test);
+        $logger->setParent($this);
+
+        return $logger;
     }
 
     // /**

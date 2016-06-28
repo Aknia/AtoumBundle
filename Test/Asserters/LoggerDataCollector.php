@@ -8,8 +8,10 @@ use mageekguy\atoum\asserters;
 
 class LoggerDataCollector extends asserters\object
 {
-    /** @var \atoum\AtoumBundle\Test\Asserters\Crawler  */
+    /** @var \atoum\AtoumBundle\Test\Asserters\Profiler  */
     private $parent;
+
+    private $logStatistics;
 
     /**
      * @param mixed $value
@@ -53,7 +55,7 @@ class LoggerDataCollector extends asserters\object
         $asserter->setParent($this);
         $asserter->setWithTest($this->test);
 
-        return $asserter->setWith($this->value->countErrors(), 'countErrors');
+        return $asserter->setWith($this->computeErrorsCount()['error_count'], 'countErrors');
     }
 
     /**
@@ -67,7 +69,7 @@ class LoggerDataCollector extends asserters\object
         $asserter->setParent($this);
         $asserter->setWithTest($this->test);
 
-        return $asserter->setWith($this->value->countDeprecations(), 'countDeprecations');
+        return $asserter->setWith($this->computeErrorsCount()['deprecation_count'], 'countDeprecations');
     }
 
     /**
@@ -81,7 +83,7 @@ class LoggerDataCollector extends asserters\object
         $asserter->setParent($this);
         $asserter->setWithTest($this->test);
 
-        return $asserter->setWith($this->value->countScreams(), 'countScreams');
+        return $asserter->setWith($this->computeErrorsCount()['scream_count'], 'countScreams');
     }
 
     public function end()
@@ -92,5 +94,46 @@ class LoggerDataCollector extends asserters\object
     private static function isLoggerDataCollector($value)
     {
         return ($value instanceof \Symfony\Component\HttpKernel\DataCollector\LoggerDataCollector);
+    }
+
+    private function computeErrorsCount()
+    {
+        if ($this->logStatistics) return $this->logStatistics;
+
+        $count = array(
+            'error_count' => 0,
+            'deprecation_count' => 0,
+            'scream_count' => 0,
+            'priorities' => array(),
+        );
+
+        foreach ($this->value->getLogs() as $log) {
+            if (isset($count['priorities'][$log['priority']])) {
+                ++$count['priorities'][$log['priority']]['count'];
+            } else {
+                $count['priorities'][$log['priority']] = array(
+                    'count' => 1,
+                    'name' => $log['priorityName'],
+                );
+            }
+
+            if ($log['priorityName'] === 'ERROR') {
+                ++$count['error_count'];
+            }
+
+            if (isset($log['context']['type'], $log['context']['level'])) {
+                if (E_DEPRECATED === $log['context']['type'] || E_USER_DEPRECATED === $log['context']['type']) {
+                    ++$count['deprecation_count'];
+                } elseif (!($log['context']['type'] & $log['context']['level'])) {
+                    ++$count['scream_count'];
+                }
+            }
+        }
+
+        ksort($count['priorities']);
+
+        $this->logStatistics = $count;
+
+        return $count;
     }
 }
