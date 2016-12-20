@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use atoum\AtoumBundle\Configuration\Bundle as BundleConfiguration;
-use mageekguy\atoum\scripts\runner;
+use atoum\AtoumBundle\Scripts\Runner;
 
 /**
  * AtoumCommand
@@ -50,10 +50,15 @@ EOF
                 )
                 ->addArgument('bundles', InputArgument::IS_ARRAY, 'Launch tests of these bundles.')
                 ->addOption('bootstrap-file', 'bf', InputOption::VALUE_REQUIRED, 'Define the bootstrap file')
-                ->addOption('no-code-coverage', null, InputOption::VALUE_NONE, 'Disable code coverage (big speed increase)')
+                ->addOption('no-code-coverage', 'ncc', InputOption::VALUE_NONE, 'Disable code coverage (big speed increase)')
+                ->addOption('use-light-report', null, InputOption::VALUE_NONE, 'Reduce the output generated')
                 ->addOption('max-children-number', 'mcn', InputOption::VALUE_REQUIRED, 'Maximum number of sub-processus which will be run simultaneously')
                 ->addOption('xunit-report-file', 'xrf', InputOption::VALUE_REQUIRED, 'Define the xunit report file')
                 ->addOption('clover-report-file', 'crf', InputOption::VALUE_REQUIRED, 'Define the clover report file')
+                ->addOption('loop', 'l', InputOption::VALUE_NONE, 'Enables Atoum loop mode')
+                ->addOption('force-terminal', '', InputOption::VALUE_NONE, '')
+                ->addOption('score-file', '', InputOption::VALUE_REQUIRED, '')
+                ->addOption('debug', 'd', InputOption::VALUE_NONE, 'Enables Atoum debug mode')
         ;
     }
 
@@ -62,7 +67,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runner = new runner('atoum');
+        $runner = new Runner('atoum');
 
         $bundles = $input->getArgument('bundles');
         if (count($bundles) > 0) {
@@ -96,6 +101,10 @@ EOF
             $this->setAtoumArgument('-ncc');
         }
 
+        if ($input->getOption('use-light-report')) {
+            $this->setAtoumArgument('-ulr');
+        }
+
         if ($input->getOption('max-children-number')) {
             $this->setAtoumArgument('--max-children-number', (int) $input->getOption('max-children-number'));
         }
@@ -119,6 +128,44 @@ EOF
             $runner->addReport($reportCli);
             $writerCli = new \mageekguy\atoum\writers\std\out();
             $reportCli->addWriter($writerCli);
+        }
+
+        try {
+            $score = $runner->run($this->getAtoumArguments())->getRunner()->getScore();
+
+            $isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0;
+
+            if ($runner->shouldFailIfVoidMethods() && $score->getVoidMethodNumber() > 0)
+            {
+                $isSuccess = false;
+            }
+
+            if ($runner->shouldFailIfSkippedMethods() && $score->getSkippedMethodNumber() > 0)
+            {
+                $isSuccess = false;
+            }
+
+            return $isSuccess ? 0 : 1;
+        } catch (\Exception $exception) {
+            $this->getApplication()->renderException($exception, $output);
+
+            return 2;
+        }
+
+        if ($input->getOption('loop')) {
+            $this->setAtoumArgument('--loop');
+        }
+
+        if ($input->getOption('force-terminal')) {
+            $this->setAtoumArgument('--force-terminal');
+        }
+
+        if ($input->getOption('score-file')) {
+            $this->setAtoumArgument('--score-file', $input->getOption('score-file'));
+        }
+
+        if ($input->getOption('debug')) {
+            $this->setAtoumArgument('--debug');
         }
 
         $runner->run($this->getAtoumArguments());

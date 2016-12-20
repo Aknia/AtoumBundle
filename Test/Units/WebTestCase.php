@@ -11,6 +11,16 @@ use Symfony\Component\CssSelector\CssSelector;
  *
  * @uses Test
  * @author Stephane PY <py.stephane1@gmail.com>
+ *
+ * @method WebTestCase request(array $options = array(), array $server = array(), array $cookies = array())
+ * @method \atoum\AtoumBundle\Test\Asserters\Response get($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response head($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response post($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response put($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response patch($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response delete($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Response options($path, array $parameters = array(), array $files = array(), array $server = array(), $content = null, $changeHistory = true)
+ * @method \atoum\AtoumBundle\Test\Asserters\Crawler crawler($strict = false)
  */
 abstract class WebTestCase extends Test
 {
@@ -56,10 +66,13 @@ abstract class WebTestCase extends Test
             ->setHandler(
                 'crawler',
                 function ($strict = false) use (& $crawler, $generator, $test) {
-                    if ($strict) {
-                        CssSelector::enableHtmlExtension();
-                    } else {
-                        CssSelector::disableHtmlExtension();
+                    // BC with Symfony <=2.8
+                    if (class_exists('Symfony\Component\CssSelector\CssSelector')) {
+                        if ($strict) {
+                            CssSelector::enableHtmlExtension();
+                        } else {
+                            CssSelector::disableHtmlExtension();
+                        }
                     }
 
                     return $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Crawler', array($crawler), $test);

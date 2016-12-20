@@ -12,7 +12,7 @@ This bundle provides a (very) simple integration of [atoum](https://github.com/a
 ```json
 {
     "require": {
-        "atoum/atoum-bundle": "~1.1"
+        "atoum/atoum-bundle": "^1.4"
     }
 }
 ```
@@ -22,7 +22,7 @@ In most of the cases you don't need AtoumBundle in your production environment.
 ```json
 {
     "require-dev": {
-        "atoum/atoum-bundle": "~1.1"
+        "atoum/atoum-bundle": "^1.4"
     }
 }
 ```
@@ -126,7 +126,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 // Assuming that this command will display "Success" if succes, and returns a boolean
-use My\Bundle\FoobarBundle\Tests\Units\Command\FoobarCommand as Base;
+use My\Bundle\FoobarBundle\Command\FoobarCommand as Base;
 
 class FoobarCommand extends AtoumBundle\CommandTestCase
 {
