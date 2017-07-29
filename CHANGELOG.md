@@ -1,3 +1,15 @@
+2.0.0 - 2017-07-19
+=====
+
+## Bugfix
+
+* [#110](https://github.com/atoum/AtoumBundle/pull/110) Rename reserved "object" to "phpObject" ([@NiniGeek])
+
+1.6.0
+=====
+
+* [#107](https://github.com/atoum/AtoumBundle/pull/107) Add debug option ([@jdecool])
+
 1.5.0
 ===========
 
@@ -59,3 +71,5 @@
 [@lolautruche]: https://github.com/lolautruche
 [@gpaton]: https://github.com/gpaton
 [@maxailloud]: https://github.com/maxailloud
+[@jdecool]: https://github.com/jdecool
+[@NiniGeek]: https://github.com/NiniGeek
