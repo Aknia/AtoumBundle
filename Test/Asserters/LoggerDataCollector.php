@@ -6,7 +6,7 @@ use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
 
-class LoggerDataCollector extends asserters\object
+class LoggerDataCollector extends asserters\phpObject
 {
     /** @var \atoum\AtoumBundle\Test\Asserters\Profiler  */
     private $parent;

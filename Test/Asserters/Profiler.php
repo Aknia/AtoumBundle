@@ -10,7 +10,7 @@ use atoum\AtoumBundle\Test\Asserters\PhpFloat;
 use atoum\AtoumBundle\Test\Asserters\Integer;
 use atoum\AtoumBundle\Test\Asserters\Boolean;
 
-class Profiler extends asserters\object
+class Profiler extends asserters\phpObject
 {
     /** @var \atoum\AtoumBundle\Test\Asserters\Profiler  */
     private $parent;
