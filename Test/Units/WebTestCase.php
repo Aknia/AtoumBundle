@@ -91,7 +91,10 @@ abstract class WebTestCase extends Test
                         throw new \Exception('Ouchi');
                     }
 
-                    return $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Profiler', array($client->getProfile()), $test);
+                    $profile = $generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Profiler', array($client->getProfile()), $test);
+                    $profile->setParent($generator->getAsserterInstance('\\atoum\\AtoumBundle\\Test\\Asserters\\Response', array($client->getResponse()), $test));
+
+                    return $profile;
                 }
             )
         ;
