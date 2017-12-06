@@ -9,6 +9,7 @@ use atoum\AtoumBundle\Test\Asserters\PhpString;
 use atoum\AtoumBundle\Test\Asserters\PhpFloat;
 use atoum\AtoumBundle\Test\Asserters\Integer;
 use atoum\AtoumBundle\Test\Asserters\Boolean;
+use atoum\AtoumBundle\Test\Asserters\Response;
 
 class Profiler extends asserters\phpObject
 {
@@ -39,9 +40,9 @@ class Profiler extends asserters\phpObject
     /**
      * Set parent
      *
-     * @param \atoum\AtoumBundle\Test\Asserters\Profiler $parent
+     * @param Response $parent
      */
-    public function setParent(Profiler $parent)
+    public function setParent(Response $parent)
     {
         $this->parent = $parent;
     }
