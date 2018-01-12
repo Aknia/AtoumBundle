@@ -12,5 +12,9 @@
     <services>
         <service id="atoum.configuration.bundle.container" class="%atoum.configuration.bundle.container.class%">
         </service>
+
+        <prototype namespace="atoum\AtoumBundle\Command\" resource="../../../Command/*">
+            <tag name="console.command" />
+        </prototype>
     </services>
 </container>
