@@ -60,6 +60,18 @@ class Profiler extends asserters\phpObject
         return $logger;
     }
 
+    public function queryCount(int $expected)
+    {
+        $value = $this->value->getCollector('db')->getQueryCount();
+        if ($value === $expected) {
+            $this->pass();
+        } else {
+            $this->fail(sprintf($this->getLocale()->_($value .' is not equal to '. $expected), $this));
+        }
+
+        return $this;
+    }
+
     // /**
     //  * @param string $key
     //  */

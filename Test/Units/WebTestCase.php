@@ -44,7 +44,7 @@ abstract class WebTestCase extends Test
                     $client = $test->createClient($options, $server, $cookies);
                     $client->enableProfiler();
 
-                    // $client->getContainer()->get('profiler')->purge();
+                    $client->getContainer()->get('profiler')->reset();
 
                     return $test;
                 }
